@@ -1,4 +1,4 @@
-print("hi from kaiser")
+-- print("hi from kaiser")
 
 vim.g.mapleader = " "
 
@@ -17,5 +17,5 @@ vim.opt.incsearch = true
 vim.opt.scrolloff = 10
 vim.opt.updatetime = 50
 
-vim.keymap.set('v', "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set('v', "K", ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', "J", ":m '<-2<CR>gv=gv")

@@ -71,6 +71,26 @@ require('lazy').setup({
   },
 
   {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+
+    -- For blink.cmp's completion
+    -- source
+    dependencies = {
+      "saghen/blink.cmp"
+    },
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
+  },
+  {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -195,8 +215,8 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
- -- require 'kickstart.plugins.autoformat',
- -- require 'kickstart.plugins.debug',
+  -- require 'kickstart.plugins.autoformat',
+  -- require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -447,14 +467,14 @@ local on_attach = function(_, bufnr)
 end
 
 -- document existing key chains
-require('which-key').register({
-  ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-  ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+require('which-key').add({
+  { '<leader>c', desc = '[C]ode' },
+  { '<leader>d', desc = '[D]ocument' },
+  { '<leader>g', desc = '[G]it' },
+  { '<leader>h', desc = 'More git' },
+  { '<leader>r', desc = '[R]ename' },
+  { '<leader>s', desc = '[S]earch' },
+  { '<leader>w', desc = '[W]orkspace' },
 })
 
 -- Enable the following language servers
@@ -469,7 +489,7 @@ local servers = {
   -- clangd = {},
   gopls = {},
   pyright = {},
-  -- rust_analyzer = {},
+  rust_analyzer = {},
   tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
 
@@ -485,10 +505,10 @@ local servers = {
 require('neodev').setup()
 require('autoclose').setup()
 require('nvim-terminal').setup()
-vim.api.nvim_set_keymap("n", "<Leader>t", ":belowright split |terminal<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<Leader>t", ":rightb vert terminal<CR>", { noremap = true })
 -- telescope file browser
 require("telescope").setup {
-  extensions = {
+   extensions = {
     file_browser = {
       theme = "ivy",
       -- disables netrw and use telescope-file-browser in its place
@@ -501,6 +521,16 @@ require("telescope").setup {
           -- your custom normal mode mappings
         },
       },
+     -- Customize layout configuration
+      layout_config = {
+        width = 0.9,  -- Width of the layout
+        height = 0.8, -- Height of the layout
+        -- preview_cutoff = 120, -- Minimum number of items to show preview
+        prompt_position = "bottom", -- Position of the prompt ("top" or "bottom")
+        preview_width = 0.7,
+      },
+      -- Choose layout strategy
+      layout_strategy = "horizontal", -- Options: "horizontal", "vertical", "flex"
     },
   },
 }
@@ -508,7 +538,7 @@ require("telescope").setup {
 -- you need to call load_extension, somewhere after setup function:
 require("telescope").load_extension "file_browser"
 
-vim.api.nvim_set_keymap("n", "<Leader>e", ":Telescope file_browser<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<Leader>e", ":Telescope file_browser<CR>", { noremap = true })
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -520,6 +550,7 @@ local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
+  automatic_installation = true
 }
 
 mason_lspconfig.setup_handlers {
